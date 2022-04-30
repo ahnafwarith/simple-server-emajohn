@@ -19,7 +19,14 @@ async function run() {
             const query = {};
             const cursor = productsCollection.find(query);
             const products = await cursor.toArray();
-            res.send(products)
+            res.send(products);
+        })
+
+        app.get('/productCount', async (req, res) => {
+            const query = {};
+            const cursor = productsCollection.find(query);
+            const count = await cursor.count();
+            res.send({ count });
         })
     }
     finally {
