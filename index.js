@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const res = require('express/lib/response');
 const port = process.env.PORT || 5000;
 const app = express();
 require('dotenv').config()
@@ -37,6 +38,20 @@ async function run() {
             const count = await productsCollection.estimatedDocumentCount();
             res.send({ count });
         })
+
+        // use post to get products by ids
+        app.post('/productByKeys', async (req, res) => {
+            const keys = req.body
+            const ids = keys.map(id => ObjectId(id))
+            // console.log(keys)
+            const query = {
+                _id: { $in: ids }
+            }
+            const cursor = productsCollection.find(query)
+            const products = await cursor.toArray()
+            res.send(products)
+        })
+
     }
     finally {
 
